@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="592.0" prefWidth="705.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uah.metod.practica4ines.PantallaNormas">
+   <children>
+      <Label layoutX="258.0" layoutY="61.0" text="LAS NORMAS SON:" textFill="#7e0ba1">
+         <font>
+            <Font name="Arial Black" size="18.0" />
+         </font></Label>
+      <Label layoutX="48.0" layoutY="160.0" prefHeight="48.0" prefWidth="606.0" text="Configuración inicial: Antes de iniciar el juego, los jugadores pueden ajustar los parámetros del juego, como las características de los individuos y los recursos, así como la distribución inicial en el tablero." textAlignment="JUSTIFY" wrapText="true" />
+      <Label layoutX="48.0" layoutY="201.0" prefHeight="58.0" prefWidth="606.0" text="Durante el juego, los jugadores no pueden cambiar ningún parámetros. Pueden pausar la simulación, ajustar la configuración y guardar el estado del juego, pero los parámetros de filas y columnas no se podrán cambiar." textAlignment="JUSTIFY" wrapText="true" />
+      <Label layoutX="49.0" layoutY="254.0" prefHeight="48.0" prefWidth="606.0" text="Turnos: Cada turno representa un ciclo de vida en el juego, durante el cual se actualizan los individuos y los recursos, se ejecutan los movimientos, y se evalúan las interacciones entre individuos y recursos." textAlignment="JUSTIFY" wrapText="true" />
+      <Label layoutX="48.0" layoutY="294.0" prefHeight="58.0" prefWidth="606.0" text="Movimientos de los individuos: Los individuos se moverán automáticamente en cada turno según su tipo y las condiciones del entorno. Los jugadores no intervienen directamente en los movimientos individuales." textAlignment="JUSTIFY" wrapText="true" />
+      <Label layoutX="48.0" layoutY="345.0" prefHeight="66.0" prefWidth="606.0" text="Reproducción y clonación: Los individuos pueden reproducirse entre sí, generando nuevos individuos con probabilidades ajustadas según su tipo y la presencia de recursos. También pueden clonarse a sí mismos con una probabilidad determinada." textAlignment="JUSTIFY" wrapText="true" />
+      <Label layoutX="48.0" layoutY="405.0" prefHeight="66.0" prefWidth="606.0" text="Interacciones con el entorno: Los recursos presentes en el entorno pueden afectar a los individuos de diversas maneras, aumentando o disminuyendo sus características. Los jugadores deben tener en cuenta estos efectos al planificar la evolución de la población." textAlignment="JUSTIFY" wrapText="true" />
+      <Label layoutX="48.0" layoutY="478.0" prefHeight="58.0" prefWidth="606.0" text="Fin del juego: La partida puede terminar cuando solo queda un individuo vivo en el tablero o cuando los jugadores deciden finalizar la simulación. En ese momento, se mostrará un árbol de reproducción que ilustra la genealogía de los individuos sobrevivientes." textAlignment="JUSTIFY" wrapText="true" />
+      <Label layoutX="48.0" layoutY="102.0" prefHeight="58.0" prefWidth="606.0" text="Objetivo del juego: Supervisar y gestionar una población de individuos en un entorno cambiante, asegurándose de que los individuos se desarrollen y reproduzcan de manera eficiente, y que los recursos estén adecuadamente distribuidos para mantener la población viva." textAlignment="JUSTIFY" wrapText="true" />
+   </children>
+</AnchorPane>

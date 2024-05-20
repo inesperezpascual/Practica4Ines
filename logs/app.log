@@ -1,0 +1,39 @@
+2024-05-20 16:30:10.572 - INFO  - es.uah.metod.practica4ines.MainApplication - Inicio del arranque de la ventana del menú inicial
+2024-05-20 16:30:10.589 - TRACE - es.uah.metod.practica4ines.MainApplication - Enviando una traza de ejecución
+2024-05-20 16:30:10.590 - DEBUG - es.uah.metod.practica4ines.MainApplication - Enviado un debug
+2024-05-20 16:30:10.590 - INFO  - es.uah.metod.practica4ines.MainApplication - Enviando un info
+2024-05-20 16:30:10.590 - WARN  - es.uah.metod.practica4ines.MainApplication - Enviando un aviso
+2024-05-20 16:30:10.590 - ERROR - es.uah.metod.practica4ines.MainApplication - Enviando un error
+2024-05-20 16:30:10.590 - FATAL - es.uah.metod.practica4ines.MainApplication - Enviando una explosión fatal
+2024-05-20 16:33:20.322 - INFO  - es.uah.metod.practica4ines.MainApplication - Inicio del arranque de la ventana del menú inicial
+2024-05-20 16:33:20.325 - TRACE - es.uah.metod.practica4ines.MainApplication - Enviando una traza de ejecución
+2024-05-20 16:33:20.325 - DEBUG - es.uah.metod.practica4ines.MainApplication - Enviado un debug
+2024-05-20 16:33:20.326 - INFO  - es.uah.metod.practica4ines.MainApplication - Enviando un info
+2024-05-20 16:33:20.326 - WARN  - es.uah.metod.practica4ines.MainApplication - Enviando un aviso
+2024-05-20 16:33:20.326 - ERROR - es.uah.metod.practica4ines.MainApplication - Enviando un error
+2024-05-20 16:33:20.326 - FATAL - es.uah.metod.practica4ines.MainApplication - Enviando una explosión fatal
+2024-05-20 16:33:59.749 - DEBUG - es.uah.metod.practica4ines.MainApplication - Partida pausada.
+2024-05-20 16:34:01.565 - DEBUG - es.uah.metod.practica4ines.MainApplication - Hemos entrado en TerminarButtonClick
+2024-05-20 16:34:01.566 - DEBUG - es.uah.metod.practica4ines.MainApplication - Seguimos aquí
+2024-05-20 16:34:01.566 - DEBUG - es.uah.metod.practica4ines.MainApplication - Seguimos aquí 2
+2024-05-20 16:45:49.504 - INFO  - es.uah.metod.practica4ines.MainApplication - Inicio del arranque de la ventana del menú inicial
+2024-05-20 16:45:49.506 - TRACE - es.uah.metod.practica4ines.MainApplication - Enviando una traza de ejecución
+2024-05-20 16:45:49.506 - DEBUG - es.uah.metod.practica4ines.MainApplication - Enviado un debug
+2024-05-20 16:45:49.506 - INFO  - es.uah.metod.practica4ines.MainApplication - Enviando un info
+2024-05-20 16:45:49.507 - WARN  - es.uah.metod.practica4ines.MainApplication - Enviando un aviso
+2024-05-20 16:45:49.507 - ERROR - es.uah.metod.practica4ines.MainApplication - Enviando un error
+2024-05-20 16:45:49.507 - FATAL - es.uah.metod.practica4ines.MainApplication - Enviando una explosión fatal
+2024-05-20 16:46:28.887 - DEBUG - es.uah.metod.practica4ines.MainApplication - Partida pausada.
+2024-05-20 16:46:34.686 - DEBUG - es.uah.metod.practica4ines.MainApplication - Hemos entrado en onBotonGuardarClick
+2024-05-20 16:46:34.687 - DEBUG - es.uah.metod.practica4ines.MainApplication - Seguimos aquí
+2024-05-20 16:46:34.687 - DEBUG - es.uah.metod.practica4ines.MainApplication - Seguimos aquí 2
+2024-05-20 16:47:05.261 - INFO  - es.uah.metod.practica4ines.MainApplication - Inicio del arranque de la ventana del menú inicial
+2024-05-20 16:47:05.264 - TRACE - es.uah.metod.practica4ines.MainApplication - Enviando una traza de ejecución
+2024-05-20 16:47:05.264 - DEBUG - es.uah.metod.practica4ines.MainApplication - Enviado un debug
+2024-05-20 16:47:05.264 - INFO  - es.uah.metod.practica4ines.MainApplication - Enviando un info
+2024-05-20 16:47:05.264 - WARN  - es.uah.metod.practica4ines.MainApplication - Enviando un aviso
+2024-05-20 16:47:05.264 - ERROR - es.uah.metod.practica4ines.MainApplication - Enviando un error
+2024-05-20 16:47:05.265 - FATAL - es.uah.metod.practica4ines.MainApplication - Enviando una explosión fatal
+2024-05-20 16:47:37.961 - DEBUG - es.uah.metod.practica4ines.MainApplication - Partida pausada.
+2024-05-20 16:47:40.936 - DEBUG - es.uah.metod.practica4ines.MainApplication - Hemos entrado en onBotonGuardarClick
+2024-05-20 16:47:40.937 - DEBUG - es.uah.metod.practica4ines.MainApplication - Seguimos aquí
