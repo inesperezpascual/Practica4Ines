@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="843.0" prefWidth="1539.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uah.metod.practica4ines.NuevaPartidaParametrosController">
+<AnchorPane prefHeight="843.0" prefWidth="1539.0" style="-fx-background-color: #7e0ba1;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uah.metod.practica4ines.NuevaPartidaParametrosController">
    <children>
       <TabPane layoutX="1062.0" layoutY="103.0" prefHeight="367.0" prefWidth="399.0" style="-fx-background-color: #f28ff2;" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -18,13 +14,25 @@
                      <children>
                         <Slider fx:id="sliderColumnas" blockIncrement="2.0" layoutX="183.0" layoutY="101.0" majorTickUnit="2.0" max="20.0" prefHeight="40.0" prefWidth="164.0" showTickLabels="true" showTickMarks="true" />
                         <Slider fx:id="sliderFilas" blockIncrement="2.0" layoutX="183.0" layoutY="177.0" majorTickUnit="2.0" max="20.0" prefHeight="40.0" prefWidth="164.0" showTickLabels="true" showTickMarks="true" />
-                        <Label layoutX="42.0" layoutY="101.0" prefHeight="19.0" prefWidth="78.0" text="Nº Columnas:" />
-                        <Label layoutX="56.0" layoutY="179.0" prefHeight="18.0" prefWidth="50.0" text="Nº Filas:" />
-                        <Label layoutX="42.0" layoutY="47.0" text="Establece las dimensiones del tablero:" />
+                        <Label layoutX="42.0" layoutY="101.0" prefHeight="19.0" prefWidth="78.0" text="Nº Columnas:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="56.0" layoutY="179.0" prefHeight="18.0" prefWidth="50.0" text="Nº Filas:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="72.0" layoutY="42.0" text="Establece las dimensiones del tablero:">
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font></Label>
                         <Label fx:id="labelValorSliderColumnas" layoutX="149.0" layoutY="102.0" text="--" />
                         <Label fx:id="labelValorSliderFilas" layoutX="149.0" layoutY="179.0" text="--" />
                         <Slider fx:id="sliderVelocidad" layoutX="186.0" layoutY="253.0" majorTickUnit="0.25" max="2.0" min="0.25" minorTickCount="0" prefHeight="14.0" prefWidth="158.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-                        <Label layoutX="43.0" layoutY="254.0" text="Velocidad :  x1" />
+                        <Label layoutX="43.0" layoutY="254.0" text="Velocidad :  x1">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
                         <Label fx:id="labelValorSliderVelocidad" layoutX="149.0" layoutY="254.0" text="--" />
                      </children></AnchorPane>
             </content>
@@ -33,17 +41,24 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="253.0" prefWidth="423.0">
                      <children>
-                        <Slider fx:id="sliderTurnosVida" layoutX="63.0" layoutY="68.0" min="1.0" orientation="VERTICAL" prefHeight="127.0" prefWidth="27.0" showTickLabels="true" showTickMarks="true" />
-                        <Label fx:id="labelValorSliderTurnosVida" layoutX="58.0" layoutY="208.0" text="--" />
-                        <Slider fx:id="sliderProbReprod" layoutX="155.0" layoutY="66.0" orientation="VERTICAL" prefHeight="132.0" prefWidth="36.0" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderProbClon" layoutX="255.0" layoutY="66.0" orientation="VERTICAL" prefHeight="132.0" prefWidth="26.0" showTickLabels="true" showTickMarks="true" />
-                        <Label fx:id="labelValorSliderProbReprod" layoutX="156.0" layoutY="208.0" text="--" />
-                        <Label fx:id="labelValorSliderProbClon" layoutX="250.0" layoutY="208.0" text="--" />
-                        <Label layoutX="23.0" layoutY="32.0" text="Turnos de vida:" />
-                        <Label alignment="CENTER" layoutX="225.0" layoutY="23.0" text="Probabilidad" />
-                        <Label alignment="CENTER" layoutX="116.0" layoutY="43.0" text="de reproducción:" />
-                        <Label alignment="CENTER" layoutX="224.0" layoutY="43.0" text="de clonación:" />
-                        <Label alignment="CENTER" layoutX="139.0" layoutY="23.0" text="Probabilidad" />
+                        <Slider fx:id="sliderTurnosVida" layoutX="76.0" layoutY="98.0" min="1.0" orientation="VERTICAL" prefHeight="127.0" prefWidth="27.0" showTickLabels="true" showTickMarks="true" />
+                        <Label fx:id="labelValorSliderTurnosVida" layoutX="71.0" layoutY="264.0" text="--" />
+                        <Slider fx:id="sliderProbReprod" layoutX="182.0" layoutY="96.0" orientation="VERTICAL" prefHeight="132.0" prefWidth="36.0" showTickLabels="true" showTickMarks="true" />
+                        <Slider fx:id="sliderProbClon" layoutX="287.0" layoutY="96.0" orientation="VERTICAL" prefHeight="132.0" prefWidth="26.0" showTickLabels="true" showTickMarks="true" />
+                        <Label fx:id="labelValorSliderProbReprod" layoutX="183.0" layoutY="264.0" text="--" />
+                        <Label fx:id="labelValorSliderProbClon" layoutX="282.0" layoutY="264.0" text="--" />
+                        <Label layoutX="43.0" layoutY="60.0" text="Turnos de vida:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label alignment="CENTER" layoutX="238.0" layoutY="47.0" prefHeight="42.0" prefWidth="98.0" text="Probabilidad de clonación:" textAlignment="CENTER" wrapText="true">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label alignment="CENTER" layoutX="138.0" layoutY="47.0" prefHeight="42.0" prefWidth="99.0" text="Probabilidad de reproducción:" textAlignment="CENTER" wrapText="true">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -51,25 +66,46 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="266.0" prefWidth="510.0">
                      <children>
-                        <Slider fx:id="sliderAgua" layoutX="49.0" layoutY="78.0" orientation="VERTICAL" prefHeight="121.0" prefWidth="10.0" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderComida" layoutX="112.0" layoutY="74.0" orientation="VERTICAL" prefHeight="128.0" prefWidth="18.0" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderMontaña" layoutX="158.0" layoutY="75.0" max="0.0" min="-100.0" orientation="VERTICAL" prefHeight="127.0" prefWidth="35.0" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderTesoro" layoutX="208.0" layoutY="74.0" orientation="VERTICAL" prefHeight="127.0" prefWidth="40.0" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderBiblioteca" layoutX="267.0" layoutY="71.0" orientation="VERTICAL" prefHeight="130.0" prefWidth="37.0" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderPozo" blockIncrement="100.0" layoutX="328.0" layoutY="72.0" majorTickUnit="100.0" orientation="VERTICAL" prefHeight="128.0" prefWidth="28.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-                        <Label fx:id="labelValorSliderAgua" layoutX="38.0" layoutY="220.0" text="--" />
-                        <Label fx:id="labelValorSliderComida" layoutX="99.0" layoutY="220.0" text="--" />
-                        <Label fx:id="labelValorSliderPozo" layoutX="332.0" layoutY="220.0" text="--" />
-                        <Label fx:id="labelValorSliderBiblioteca" layoutX="277.0" layoutY="220.0" text="--" />
-                        <Label fx:id="labelValorSliderMontaña" layoutX="161.0" layoutY="220.0" text="--" />
-                        <Label fx:id="labelValorSliderTesoro" layoutX="218.0" layoutY="220.0" text="--" />
-                        <Label layoutX="28.0" layoutY="49.0" text="Agua:" />
-                        <Label layoutX="59.0" layoutY="14.0" text="Elige cómo te van a afectar los siguientes recursos:" />
-                        <Label layoutX="82.0" layoutY="49.0" text="Comida:" />
-                        <Label layoutX="141.0" layoutY="49.0" text="Montaña:" />
-                        <Label layoutX="203.0" layoutY="49.0" text="Tesoro:" />
-                        <Label layoutX="254.0" layoutY="49.0" text="Biblioteca:" />
-                        <Label layoutX="322.0" layoutY="49.0" text="Pozo:" />
+                        <Slider fx:id="sliderAgua" layoutX="47.0" layoutY="129.0" orientation="VERTICAL" prefHeight="121.0" prefWidth="10.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Slider fx:id="sliderComida" layoutX="102.0" layoutY="126.0" orientation="VERTICAL" prefHeight="128.0" prefWidth="18.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Slider fx:id="sliderMontaña" layoutX="148.0" layoutY="126.0" max="0.0" min="-100.0" orientation="VERTICAL" prefHeight="127.0" prefWidth="35.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Slider fx:id="sliderTesoro" layoutX="203.0" layoutY="126.0" orientation="VERTICAL" prefHeight="127.0" prefWidth="40.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Slider fx:id="sliderBiblioteca" layoutX="263.0" layoutY="125.0" orientation="VERTICAL" prefHeight="130.0" prefWidth="37.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Slider fx:id="sliderPozo" layoutX="324.0" layoutY="126.0" max="0.0" min="-100.0" orientation="VERTICAL" prefHeight="128.0" prefWidth="28.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Label fx:id="labelValorSliderAgua" layoutX="49.0" layoutY="272.0" text="--" />
+                        <Label fx:id="labelValorSliderComida" layoutX="106.0" layoutY="272.0" text="--" />
+                        <Label fx:id="labelValorSliderPozo" layoutX="333.0" layoutY="272.0" text="--" />
+                        <Label fx:id="labelValorSliderBiblioteca" layoutX="277.0" layoutY="272.0" text="--" />
+                        <Label fx:id="labelValorSliderMontaña" layoutX="161.0" layoutY="272.0" text="--" />
+                        <Label fx:id="labelValorSliderTesoro" layoutX="218.0" layoutY="272.0" text="--" />
+                        <Label layoutX="32.0" layoutY="98.0" text="Agua:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="27.0" layoutY="42.0" text="Elige cómo te van a afectar los siguientes recursos:">
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="85.0" layoutY="98.0" text="Comida:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="136.0" layoutY="98.0" text="Montaña:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="198.0" layoutY="98.0" text="Tesoro:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="249.0" layoutY="98.0" text="Biblioteca:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="317.0" layoutY="98.0" text="Pozo:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
                      </children></AnchorPane>
               </content>
             </Tab>
@@ -77,22 +113,46 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="31.0" layoutY="36.0" text="¿Con qué probabilidad quieres que aparezca un nuevo recurso?" />
-                        <Label fx:id="labelValorSliderProbNuevoRecurso" layoutX="66.0" layoutY="67.0" text="--" />
-                        <Slider fx:id="sliderProbNuevoRecurso" layoutX="140.0" layoutY="67.0" prefHeight="14.0" prefWidth="171.0" showTickLabels="true" showTickMarks="true" />
-                        <Label layoutX="49.0" layoutY="105.0" text="¿Qué probabilidades para aparecer tendrá cada recurso?" />
-                        <Slider fx:id="sliderProbAgua" layoutX="49.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderProbComida" layoutX="102.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderProbMontaña" layoutX="159.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderProbTesoro" layoutX="218.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderProbBiblioteca" layoutX="274.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
-                        <Slider fx:id="sliderProbPozo" layoutX="334.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
-                        <Label layoutX="41.0" layoutY="130.0" text="Agua:" />
-                        <Label layoutX="87.0" layoutY="130.0" text="Comida:" />
-                        <Label layoutX="141.0" layoutY="130.0" text="Montaña:" />
-                        <Label layoutX="205.0" layoutY="130.0" text="Tesoro:" />
-                        <Label layoutX="254.0" layoutY="130.0" text="Biblioteca:" />
-                        <Label layoutX="326.0" layoutY="130.0" text="Pozo:" />
+                        <Label layoutX="31.0" layoutY="22.0" text="¿Con qué probabilidad aparecerá un nuevo recurso?">
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font></Label>
+                        <Label fx:id="labelValorSliderProbNuevoRecurso" layoutX="68.0" layoutY="58.0" text="--" />
+                        <Slider fx:id="sliderProbNuevoRecurso" layoutX="145.0" layoutY="48.0" prefHeight="14.0" prefWidth="171.0" showTickLabels="true" showTickMarks="true" />
+                        <Label layoutX="15.0" layoutY="105.0" text="¿Qué probabilidades para aparecer tendrá cada recurso?">
+                           <font>
+                              <Font name="Arial Black" size="12.0" />
+                           </font></Label>
+                        <Slider fx:id="sliderProbAgua" layoutX="37.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
+                        <Slider fx:id="sliderProbComida" layoutX="89.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
+                        <Slider fx:id="sliderProbMontaña" layoutX="145.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
+                        <Slider fx:id="sliderProbTesoro" layoutX="201.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" />
+                        <Slider fx:id="sliderProbBiblioteca" layoutX="262.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Slider fx:id="sliderProbPozo" layoutX="320.0" layoutY="156.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Label layoutX="41.0" layoutY="130.0" text="Agua:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="87.0" layoutY="130.0" text="Comida:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="141.0" layoutY="130.0" text="Montaña:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="205.0" layoutY="130.0" text="Tesoro:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="254.0" layoutY="130.0" text="Biblioteca:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
+                        <Label layoutX="326.0" layoutY="130.0" text="Pozo:">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font></Label>
                         <Label fx:id="labelValorSliderProbAgua" layoutX="51.0" layoutY="307.0" text="--" />
                         <Label fx:id="labelValorSliderProbComida" layoutX="104.0" layoutY="307.0" text="--" />
                         <Label fx:id="labelValorSliderProbMontaña" layoutX="161.0" layoutY="307.0" text="--" />
@@ -105,16 +165,58 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Button fx:id="BotonAceptar" layoutX="1166.0" layoutY="517.0" mnemonicParsing="false" onAction="#onBotonAceptarClick" style="-fx-background-color: #cc00ff;" text="Aceptar" />
-      <Button fx:id="BotonReiniciar" layoutX="1271.0" layoutY="517.0" mnemonicParsing="false" onAction="#onBotonReiniciarClick" style="-fx-background-color: #cc00ff;" text="Reiniciar" />
-      <Button fx:id="BotonCerrar" layoutX="1418.0" layoutY="32.0" mnemonicParsing="false" onAction="#onBotonCerrarClick" prefWidth="59.0" text="Cerrar" />
-      <Button fx:id="botonJugar" layoutX="266.0" layoutY="768.0" mnemonicParsing="false" onAction="#onJugarButtonClick" prefHeight="42.0" prefWidth="86.0" style="-fx-background-color: #cc00ff;" text="Jugar" />
+      <Button fx:id="BotonAceptar" layoutX="1166.0" layoutY="517.0" mnemonicParsing="false" onAction="#onBotonAceptarClick" style="-fx-background-color: #f28ff2;" text="Aceptar">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Button fx:id="BotonReiniciar" layoutX="1271.0" layoutY="517.0" mnemonicParsing="false" onAction="#onBotonReiniciarClick" style="-fx-background-color: #f28ff2;" text="Reiniciar">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Button fx:id="BotonCerrar" layoutX="1418.0" layoutY="32.0" mnemonicParsing="false" onAction="#onBotonCerrarClick" prefWidth="59.0" style="-fx-background-color: #f28ff2;" text="Cerrar">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Button fx:id="botonJugar" layoutX="266.0" layoutY="768.0" mnemonicParsing="false" onAction="#onJugarButtonClick" prefHeight="42.0" prefWidth="86.0" style="-fx-background-color: #f28ff2;" text="Jugar">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
       <Label fx:id="welcomeText" layoutX="403.0" layoutY="45.0" prefHeight="18.0" prefWidth="164.0" />
-      <Button fx:id="botonPausar" layoutX="403.0" layoutY="768.0" mnemonicParsing="false" onAction="#onPausarButtonClick" prefHeight="42.0" prefWidth="86.0" style="-fx-background-color: #cc00ff;" text="Pausar" />
-      <Button fx:id="botonTerminar" layoutX="538.0" layoutY="768.0" mnemonicParsing="false" onAction="#onTerminarButtonClick" prefHeight="42.0" prefWidth="92.0" style="-fx-background-color: #cc00ff;" text="Terminar" textFill="#ff0808" />
-      <Pane fx:id="paneTablero" layoutX="149.0" layoutY="193.0" prefHeight="546.0" prefWidth="672.0" />
-      <Label fx:id="labelTurno" layoutX="197.0" layoutY="95.0" text="Turno:" />
-      <Button fx:id="BotonNormas" layoutX="1180.0" layoutY="32.0" mnemonicParsing="false" onAction="#onBotonNormasClick" text="¿Cómo Jugar?" />
-      <Button fx:id="BotonGuardar" layoutX="1301.0" layoutY="31.0" mnemonicParsing="false" onAction="#onBotonGuardarClick" prefHeight="26.0" prefWidth="78.0" text="Guardar" />
+      <Button fx:id="botonPausar" layoutX="403.0" layoutY="768.0" mnemonicParsing="false" onAction="#onPausarButtonClick" prefHeight="42.0" prefWidth="86.0" style="-fx-background-color: #f28ff2;" text="Pausar">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Button fx:id="botonTerminar" layoutX="538.0" layoutY="768.0" mnemonicParsing="false" onAction="#onTerminarButtonClick" prefHeight="42.0" prefWidth="92.0" style="-fx-background-color: #f28ff2;" text="Terminar">
+         <font>
+            <Font name="Arial Black" size="12.0" />
+         </font></Button>
+      <Pane fx:id="paneTablero" layoutX="149.0" layoutY="165.0" prefHeight="546.0" prefWidth="672.0" />
+      <Label fx:id="labelTurno" alignment="CENTER" layoutX="197.0" layoutY="95.0" prefHeight="26.0" prefWidth="130.0" style="-fx-background-color: #f28ff2;" text="Turno:" />
+      <Button fx:id="BotonNormas" layoutX="1180.0" layoutY="32.0" mnemonicParsing="false" onAction="#onBotonNormasClick" style="-fx-background-color: #f28ff2;" text="¿Cómo Jugar?">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Button fx:id="BotonGuardar" layoutX="1301.0" layoutY="31.0" mnemonicParsing="false" onAction="#onBotonGuardarClick" prefHeight="26.0" prefWidth="78.0" style="-fx-background-color: #f28ff2;" text="Guardar">
+         <font>
+            <Font name="Arial" size="12.0" />
+         </font></Button>
+      <Pane layoutX="1062.0" layoutY="568.0" prefHeight="241.0" prefWidth="399.0" style="-fx-background-color: #f28ff2;">
+         <children>
+            <Label layoutX="41.0" layoutY="35.0" text="¿Quieres añadir individuos / recursos al tablero?">
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+            </Label>
+            <RadioButton fx:id="añadirIndividuoBasico" layoutX="24.0" layoutY="79.0" mnemonicParsing="false" text="Individuo Básico" textFill="#7e0ba1" />
+            <RadioButton fx:id="añadirIndividuoNormal" layoutX="142.0" layoutY="79.0" mnemonicParsing="false" text="Individuo Normal" textFill="#7e0ba1" />
+            <RadioButton fx:id="añadirIndividuoAvanzado" layoutX="262.0" layoutY="79.0" mnemonicParsing="false" text="Individuo Avanzado" textFill="#7e0ba1" />
+            <RadioButton fx:id="añadirAgua" layoutX="78.0" layoutY="150.0" mnemonicParsing="false" text="Agua" textFill="#7e0ba1" />
+            <RadioButton fx:id="añadirComida" layoutX="161.0" layoutY="150.0" mnemonicParsing="false" text="Comida" textFill="#7e0ba1" />
+            <RadioButton fx:id="añadirMontaña" layoutX="251.0" layoutY="150.0" mnemonicParsing="false" text="Montaña" textFill="#7e0ba1" />
+            <RadioButton fx:id="añadirTesoro" layoutX="74.0" layoutY="189.0" mnemonicParsing="false" text="Tesoro" textFill="#7e0ba1" />
+            <RadioButton fx:id="añadirBiblioteca" layoutX="155.0" layoutY="189.0" mnemonicParsing="false" text="Biblioteca" textFill="#7e0ba1" />
+            <RadioButton fx:id="añadirPozo" layoutX="262.0" layoutY="189.0" mnemonicParsing="false" text="Pozo" textFill="#7e0ba1" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

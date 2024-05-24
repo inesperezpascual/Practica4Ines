@@ -16,12 +16,6 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         log.info("Inicio del arranque de la ventana del menú inicial");
-        log.trace("Enviando una traza de ejecución");
-        log.debug("Enviado un debug");
-        log.info("Enviando un info");
-        log.warn("Enviando un aviso");
-        log.error("Enviando un error");
-        log.fatal("Enviando una explosión fatal");
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("menu-inicial.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 420, 340);
         stage.setTitle("Menú Inicial");

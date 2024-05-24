@@ -4,12 +4,15 @@ import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -39,6 +42,8 @@ public class NuevaPartidaParametrosController implements Initializable {
     @FXML
     private GridPane tableroDeJuego = new GridPane();
 
+    @FXML Label labelFinJuego = new Label();
+
     private ArrayList<Celda> listaceldas = new ArrayList<>();
 
     private boolean partidapausa;
@@ -50,11 +55,13 @@ public class NuevaPartidaParametrosController implements Initializable {
     private Button botonTerminar;
 
     private int idIndividuos = 0;
+    private int idRecursos = 0;
     private int velocidadAdaptadaANIMATION = 50;
 
     @FXML
     private Label labelTurno;
     private int turnoPartida = 1;
+    private boolean partidaComenzada = false;
 
     @FXML
     private Button botonJugar;
@@ -64,26 +71,42 @@ public class NuevaPartidaParametrosController implements Initializable {
 
     private Partida partida = new Partida();
 
-
-
-    /**Dani
-     private int velocidad = 50;
-    @FXML
-     private Label lblTurno;
-
-     EscenariosController controladorEscenarios;
-
-     private Partida partida;
-
-     private Boolean tableroCreado = false;
-
-     private Boolean partidaCreada = false;
+    /** Radio botones para que el usuario añada individuos/recursos al tablero **/
 
     @FXML
-     private Button btnStart;
-     @FXML
-     private Button btnPausa;
-    **/
+    private ToggleGroup group = new ToggleGroup();
+
+    @FXML
+    private RadioButton añadirIndividuoBasico;
+    @FXML
+    private RadioButton añadirIndividuoNormal;
+    @FXML
+    private RadioButton añadirIndividuoAvanzado;
+    @FXML
+    private RadioButton añadirAgua;
+    @FXML
+    private RadioButton añadirComida;
+    @FXML
+    private RadioButton añadirMontaña;
+    @FXML
+    private RadioButton añadirTesoro;
+    @FXML
+    private RadioButton añadirBiblioteca;
+    @FXML
+    private RadioButton añadirPozo;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Hooks de conexión entre los controles visuales y el código, llevan @FXML para identificarlos
@@ -203,14 +226,8 @@ public class NuevaPartidaParametrosController implements Initializable {
 
 
 
-    @FXML
-    public void onBotonAceptarClick() { model.commit();   } //En model se guardan todos los datos.
-    @FXML
-    public void onBotonReiniciarClick() { model.rollback();   }
-    @FXML
-    public void onBotonCerrarClick() { scene.close();  }
 
-
+    //////////////////////////FUNCIONES PARA HACER INTERCONECTAR LOS ELEMENTOS VISUALES///////////////////////////////////////////////////////////
     public void bindSlidersLabelsInteger(Slider slider, Label label, IntegerProperty medida) {
         slider.valueProperty().bindBidirectional(medida);
         label.textProperty().bind(medida.asString());
@@ -221,16 +238,33 @@ public class NuevaPartidaParametrosController implements Initializable {
         label.textProperty().bind(medida.asString());
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     /**
      * Métodos de configuración
      **/
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
         log.debug("Inicialización en ejecución del controlador de parámetros\n");
 
-        paneTablero.getChildren().addAll(tableroDeJuego);
+        paneTablero.getChildren().addAll(tableroDeJuego, labelFinJuego);
         tableroDeJuego.setGridLinesVisible(true);
+        botonJugar.setDisable(true);
+        botonPausar.setDisable(true);
+
+        //Metemos todos los RadioButtons en el mismo
+        añadirIndividuoBasico.setToggleGroup(group);
+        añadirIndividuoNormal.setToggleGroup(group);
+        añadirIndividuoAvanzado.setToggleGroup(group);
+        añadirAgua.setToggleGroup(group);
+        añadirComida.setToggleGroup(group);
+        añadirMontaña.setToggleGroup(group);
+        añadirTesoro.setToggleGroup(group);
+        añadirBiblioteca.setToggleGroup(group);
+        añadirPozo.setToggleGroup(group);
 
         /**changeStateOfLabelColumas();
         changeStateOfLabelFilas();
@@ -282,10 +316,12 @@ public class NuevaPartidaParametrosController implements Initializable {
 
     }
 
+
     /**
      * Este método se encarga de conectar los datos del modelo con el GUI
      **/
     protected void updateGUIwithModel() {
+
         sliderColumnas.valueProperty().bindBidirectional(model.columnasProperty());
         sliderFilas.valueProperty().bindBidirectional(model.filasProperty());
         sliderVelocidad.valueProperty().bindBidirectional(model.velocidadProperty());
@@ -306,6 +342,7 @@ public class NuevaPartidaParametrosController implements Initializable {
         sliderProbBiblioteca.valueProperty().bindBidirectional(model.probBibliotecaProperty());
         sliderProbPozo.valueProperty().bindBidirectional(model.probPozoProperty());
 
+        log.debug("Hemos conectado los datos del modelo con el GUI");
     }
 
     /**
@@ -314,6 +351,7 @@ public class NuevaPartidaParametrosController implements Initializable {
     public void loadUserData(ParameterDataModelProperties parametrosData) {
         this.model = parametrosData;
         this.updateGUIwithModel();
+        log.debug("Hemos establecido el ParameterDataModelProperties y hemos conectado sus datos con el GUI");
     }
 
     public void setStage(Stage s){
@@ -324,22 +362,25 @@ public class NuevaPartidaParametrosController implements Initializable {
     @FXML
     protected void onJugarButtonClick() {
         try {
+            partidaComenzada = true;
             log.debug("Ha comenzado la partida");
-            welcomeText.setText("Cargando el tablero de juego");
+            welcomeText.setText("Que comience el juego!");
             System.out.println("Hemos llegado al tablero");
 
             partidapausa = false;
             deshabilitarSliders(true);
             deshabilitarSlidersTablero(true);
             botonJugar.setDisable(true);
+            botonPausar.setDisable(false);
 
 
             eliminarTablero();
 
             crearTablero(model.getOriginal().getColumnas(), model.getOriginal().getFilas());
 
-            agregarIndividuosAleatoriosACeldas(3);
             agregarRecursosAleatoriosACeldas(3);
+            agregarIndividuosAleatoriosACeldas(3);
+
 
             fontSize = Math.min(paneTablero.getWidth() / model.getOriginal().getColumnas(),
                     paneTablero.getHeight() / model.getOriginal().getFilas()) / 6;
@@ -369,7 +410,10 @@ public class NuevaPartidaParametrosController implements Initializable {
     }
 
 
+
     ////////////////////////////////CLASS ANIMATIONTIMER///////////////////////////////////////////////////
+    /** Esta clase se encarga de ir actualizando los individuos y el entorno y que se vaya reproduciendo automáticamente por turnos**/
+
 
     AnimationTimer animationTimer = new AnimationTimer() {
         int i = velocidadAdaptadaANIMATION;
@@ -378,38 +422,31 @@ public class NuevaPartidaParametrosController implements Initializable {
             try {
                 if (i == 0) {
                     turnoPartida++;
-                    System.out.println("Turno" + turnoPartida);
+                    log.debug("Turno" + turnoPartida);
                     labelTurno.setText("Turno: " + turnoPartida);
                     i = velocidadAdaptadaANIMATION;
                     moverIndividuos();
                     actualizarIndividuos();
                     actualizarRecursos();
-                    System.out.println("Antes de reproducirse");
-                    for (Celda celda : listaceldas) {
-                        System.out.println(celda.getColumna() + " , " + celda.getFila() + " , " + celda.getIndividuos() + " , " + celda.getRecursos());
-                    }
                     evaluarReproducir();
-                    System.out.println("Después de reproducirse y antes de morirse");
-                    for (Celda celda : listaceldas) {
-                        System.out.println(celda.getColumna() + " , " + celda.getFila() + " , " + celda.getIndividuos() + " , " + celda.getRecursos());
-                    }
-                    System.out.println("Después de morirse");
-                    evaluarMorir();
-                    for (Celda celda : listaceldas) {
-                        System.out.println(celda.getColumna() + " , " + celda.getFila() + " , " + celda.getIndividuos() + " , " + celda.getRecursos());
-                    }
+                    evaluarClonacion();
+                    evaluarMorirIndividuos();
+                    evaluarMorirRecursos();
+
                     ArrayList<Celda> celdascopy = new ArrayList<>();
                     for (Celda celda : listaceldas) {
                         celdascopy.add(celda);
                     }
                     eliminarTablero();
+                    evaluarterminarPartida();
                     listaceldas = celdascopy;
+                    evaluarterminarPartida();
                     fontSize = Math.min(paneTablero.getWidth() / model.getOriginal().getColumnas(),
                             paneTablero.getHeight() / model.getOriginal().getFilas()) / 6;
+
                     log.debug("Vamos a imprimir el tablero " + turnoPartida);
                     crearTableroConCeldas(listaceldas, model.getOriginal().getColumnas(), model.getOriginal().getFilas());
                     for (Celda celda : listaceldas) {
-                        System.out.println(celda.getColumna() + " , " + celda.getFila() + " , " + celda.getIndividuos() + " , " + celda.getRecursos());
                         mostrarEnCelda(celda, fontSize);
                     }
                 }
@@ -419,6 +456,7 @@ public class NuevaPartidaParametrosController implements Initializable {
                 // Manejo de la excepción: muestra un mensaje de error al usuario
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
+                log.error("Se produjo un error durante la animación.");
                 alert.setHeaderText("Se produjo un error durante la animación");
                 alert.setContentText("Detalles del error: " + e.getMessage());
                 alert.showAndWait();
@@ -428,7 +466,10 @@ public class NuevaPartidaParametrosController implements Initializable {
 
 
     void adaptarVelocidad() {
+        /**La velocidad del Animation Timer es realmente elevada, por lo que creamos un bucle al que no le
+         permitimos entrar hasta que no lo haga una cierta cantidad de veces **/
         log.debug("Se va a adaptar la velocidad");
+
         try {
             if (model.getOriginal().getVelocidad()==0.25) {
                 this.velocidadAdaptadaANIMATION = 125;
@@ -449,10 +490,12 @@ public class NuevaPartidaParametrosController implements Initializable {
             }
         } catch (NullPointerException e) {
             System.err.println("Error: El modelo original es nulo.");
+            log.error("El modelo original es nulo.");
             e.printStackTrace();
 
         } catch (Exception e) {
             System.err.println("Error: Se produjo una excepción no esperada.");
+            log.error("Se produjo una excepción no esperada.");
             e.printStackTrace();
         }
     }
@@ -460,20 +503,27 @@ public class NuevaPartidaParametrosController implements Initializable {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    //////////////////////////////////FUNCION PARA MOVER INDIVIDUOS ENTRE LAS CELDAS/////////////////////////////////////////////////
+
     public void moverIndividuos(){
         for (Celda celda : listaceldas) {
             List<Individuo> individuoscopy = new ArrayList<>(celda.getIndividuos());
 
             for (Individuo individuo : individuoscopy) {
                 List<Integer> direcciones = null;
-                Celda celdanueva = null;
+                Celda celdaDestino = null;
 
                 if (individuo.getTipo() == 0) {
                     IndividuoBasico individuoBasico = (IndividuoBasico) individuo;
                     direcciones = individuoBasico.moveIB(model.getOriginal().getColumnas(), model.getOriginal().getFilas());
                     celda.quitarIndividuo(individuoBasico);
-                    celdanueva = getCeldaenDireccion(direcciones.get(0), direcciones.get(1));
-                    celdanueva.agregarIndividuo(individuoBasico);
+                    celdaDestino = getCeldaenDireccion(direcciones.get(0), direcciones.get(1));
+                    celdaDestino.agregarIndividuo(individuoBasico);
+                    for (Recurso recurso : celdaDestino.getRecursos()) {
+                        ajustarIndividuoARecurso(recurso, individuoBasico);
+                    }
+
                 } //else if (individuo instanceof IndividuoNormal) {
                 //IndividuoNormal individuoNormal = (IndividuoNormal) individuo;
                 //}
@@ -492,14 +542,18 @@ public class NuevaPartidaParametrosController implements Initializable {
                     //Elegimos aleatoriamente una de las celdas que tiene alrededor en línea recta
                     if (!celdasConRecursosLineaRecta.isEmpty()) {
                         Random random = new Random();
-                        Celda celdaDestino = celdasConRecursosLineaRecta.get(random.nextInt(celdasConRecursosLineaRecta.size()));
+                        celdaDestino = celdasConRecursosLineaRecta.get(random.nextInt(celdasConRecursosLineaRecta.size()));
 
                         celda.quitarIndividuo(individuo);
                         celdaDestino.agregarIndividuo(individuo);
+                        for (Recurso recurso : celdaDestino.getRecursos()) {
+                            ajustarIndividuoARecurso(recurso, individuo);
+                        }
                     }
                 }
             }
         }
+        log.debug("Hemos movido los individuos");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,7 +562,7 @@ public class NuevaPartidaParametrosController implements Initializable {
 
     //////////////////////////////////////////FUNCION EVALUAR QUIEN DEBE MORIR (SIZE>3) ///////////////////////////////////////////////////////////////////////
 
-    public void evaluarMorir() {
+    public void evaluarMorirIndividuos() {
         try {
             for (Celda celda : listaceldas) {
                 List<Individuo> individuoslista = celda.getIndividuos();
@@ -520,14 +574,46 @@ public class NuevaPartidaParametrosController implements Initializable {
                     iterator.remove();
                 }
             }
+            log.debug("Hemos evaluado si hay más de 3 individuos por celda y cuáles deben morir en ese caso");
+
         } catch (NullPointerException e) {
             System.err.println("Error: Se encontró una referencia nula en la lista de celdas o de individuos.");
+            log.error("Se encontró una referencia nula en la lista de celdas o de individuos.");
             e.printStackTrace();
 
         } catch (Exception e) {
             System.err.println("Error: Se produjo una excepción no esperada al evaluar morir.");
+            log.error("Se produjo una excepción no esperada al evaluar morir.");
             e.printStackTrace();
         }
+    }
+
+
+    public void evaluarMorirRecursos() {
+        try {
+            for (Celda celda : listaceldas) {
+                List<Recurso> recursoslista = celda.getRecursos();
+                Collections.sort(recursoslista, Comparator.comparingInt(Recurso::getTiempoAparicion));
+                while (recursoslista.size() > 3) {
+                    Iterator<Recurso> iterator = recursoslista.iterator();
+
+                    iterator.next();
+                    iterator.remove();
+                }
+            }
+            log.debug("Hemos evaluado si hay más de 3 individuos por celda y cuáles deben morir en ese caso");
+
+        } catch (NullPointerException e) {
+            System.err.println("Error: Se encontró una referencia nula en la lista de celdas o de individuos.");
+            log.error("Se encontró una referencia nula en la lista de celdas o de individuos.");
+            e.printStackTrace();
+
+        } catch (Exception e) {
+            System.err.println("Error: Se produjo una excepción no esperada al evaluar morir.");
+            log.error("Se produjo una excepción no esperada al evaluar morir.");
+            e.printStackTrace();
+        }
+
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -538,6 +624,8 @@ public class NuevaPartidaParametrosController implements Initializable {
 
 
     public void evaluarReproducir(){
+        /** Une las probabilidades de reproducción de ambos individuos, si es mayor a 0.5 se llama a la función reproducir **/
+
         try {
             for (Celda celda : listaceldas) {
                 List<Individuo> individuoscopy = new ArrayList<>(celda.getIndividuos());
@@ -556,17 +644,23 @@ public class NuevaPartidaParametrosController implements Initializable {
                     }
                 }
             }
+            log.debug("Hemos evaluado si todos los individuos de cada celda se deben reproducir");
+
         } catch (NullPointerException e) {
             System.err.println("Error: Se encontró una referencia nula en la lista de celdas o de individuos.");
+            log.error("Se encontró una referencia nula en la lista de celdas o de individuos.");
             e.printStackTrace();
 
         } catch (Exception e) {
             System.err.println("Error al evaluar la reproducción.");
+            log.error("Error al evaluar la reproducción.");
             e.printStackTrace();
         }
     }
 
     public void reproducir (Individuo individuo1, Individuo individuo2, Celda celda) {
+        /** Se reproducen dos individuos, teniendo en cuenta sus niveles, y se mete su hijo en la celda **/
+
         try {
             Individuo nuevoIndividuo = null;
             int creartipo = 0;
@@ -588,30 +682,85 @@ public class NuevaPartidaParametrosController implements Initializable {
 
 
             if (creartipo == 0) {
-                nuevoIndividuo = new IndividuoBasico(idIndividuos, 0,model.getOriginal().getTurnosVida(),
+                nuevoIndividuo = new IndividuoBasico(idIndividuos, turnoPartida,model.getOriginal().getTurnosVida(),
                         model.getOriginal().getProbReprod(), model.getOriginal().getProbClon(),
                         1 - (model.getOriginal().getProbReprod()), 0);
-                idIndividuos ++;
             } else if (creartipo == 1) {
-                nuevoIndividuo = new IndividuoNormal(idIndividuos, 0, model.getOriginal().getTurnosVida(),
+                nuevoIndividuo = new IndividuoNormal(idIndividuos, turnoPartida, model.getOriginal().getTurnosVida(),
                         model.getOriginal().getProbReprod(), model.getOriginal().getProbClon(),
                         1 - (model.getOriginal().getProbReprod()), 1);
-                idIndividuos ++;
             } else if (creartipo == 2) {
-                nuevoIndividuo = new IndividuoAvanzado(idIndividuos, 0, model.getOriginal().getTurnosVida(),
+                nuevoIndividuo = new IndividuoAvanzado(idIndividuos, turnoPartida, model.getOriginal().getTurnosVida(),
                         model.getOriginal().getProbReprod(), model.getOriginal().getProbClon(),
                         1 - (model.getOriginal().getProbReprod()), 2);
-                idIndividuos ++;
             }
-            celda.agregarIndividuo(nuevoIndividuo);
+
+
+            if (nuevoIndividuo != null) {
+                celda.agregarIndividuo(nuevoIndividuo);
+                for (Recurso recurso : celda.getRecursos()) {
+                    ajustarIndividuoARecurso(recurso,nuevoIndividuo);
+                }
+                idRecursos ++;
+            } else {
+                log.error("Error al crear un nuevo individuo.");
+                throw new NullPointerException("Error al crear un nuevo individuo.");
+            }
         } catch (Exception e) {
             System.err.println("Error al reproducir dos individuos.");
+            log.error("Error al reproducir dos individuos.");
             e.printStackTrace();
         }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+    ////////////////////////////////////////////////EVALUAR CLONACIÓN//////////////////////////////////////////////////////////////////////////////////////////
+
+    public void evaluarClonacion(){
+        /** Para cada individuo se genera un número aleatorio(entre 0 y 1), y si es menor que la probabilidad
+         de clonación se crea un individuo exactamente igual(distinto id)**/
+
+        try {
+            for (Celda celda : listaceldas) {
+
+                List<Individuo> individuoscopy = new ArrayList<>(celda.getIndividuos());
+                for (Individuo individuo : individuoscopy) {
+                    double randomProbabilidad = Math.random();
+                    if (randomProbabilidad < individuo.getProbClon()) {
+                        Individuo nuevoIndividuo = null;
+                        if (individuo.getTipo() == 0){
+                            nuevoIndividuo = new IndividuoBasico(idIndividuos, turnoPartida, individuo.getTurnosVida(), individuo.getProbReprod(),
+                                    individuo.getProbClon(), individuo.getProbMuerte(), 0);
+                        } else if (individuo.getTipo() == 1) {
+                            nuevoIndividuo = new IndividuoNormal(idIndividuos, turnoPartida, individuo.getTurnosVida(), individuo.getProbReprod(),
+                                    individuo.getProbClon(), individuo.getProbMuerte(), 1);
+                        } else if (individuo.getTipo() == 2) {
+                            nuevoIndividuo = new IndividuoAvanzado(idIndividuos, turnoPartida, individuo.getTurnosVida(), individuo.getProbReprod(),
+                                    individuo.getProbClon(), individuo.getProbMuerte(), 2);
+                        }
+
+                        if (nuevoIndividuo != null) {
+                            celda.agregarIndividuo(nuevoIndividuo);
+                            idRecursos ++;
+                            log.debug("Hemos clonado un individuo");
+                        } else {
+                            log.error("Error al crear un nuevo individuo.");
+                            throw new NullPointerException("Error al crear un nuevo individuo.");
+                        }
+                    }
+                }
+            }
+            log.debug("Hemos evaluado que individuos deben clonarse");
+
+        } catch (Exception e) {
+            log.error("Error al reproducir dos individuos.");
+            System.err.println("Error al reproducir dos individuos.");
+            e.printStackTrace();
+        }
+    }
 
 
     /////////////////////////////////////////////////////FUNCIONES ACTUALIZAR INDIVIDUOS Y ENTORNO/////////////////////////////////////////////////////////////
@@ -629,15 +778,20 @@ public class NuevaPartidaParametrosController implements Initializable {
                     }
                 }
             }
+            log.debug("Hemos actualizado los individuos");
+
         } catch (NullPointerException e) {
             System.err.println("Error: Se encontró una referencia nula en la lista de celdas o de individuos.");
+            log.error("Se encontró una referencia nula en la lista de celdas o de individuos.");
             e.printStackTrace();
 
         } catch (Exception e) {
             System.err.println("Error al actualizar individuos.");
+            log.error("Error al actualizar individuos.");
             e.printStackTrace();
         }
     }
+
     public void actualizarRecursos() {
         try {
             for (Celda celda : listaceldas) {
@@ -683,24 +837,60 @@ public class NuevaPartidaParametrosController implements Initializable {
                             tipoo = "Pozo";
                         }
 
-                        Recurso nuevoRecurso = new Recurso((String) tipoo, 3);
-                        celda.agregarRecurso(nuevoRecurso);
+                        Recurso nuevoRecurso = new Recurso(idRecursos, (String) tipoo, 3);
+
+                        if (nuevoRecurso != null) {
+                            celda.agregarRecurso(nuevoRecurso);
+                            idRecursos ++;
+                            for (Individuo individuo : celda.getIndividuos()) {
+                                ajustarIndividuoARecurso(nuevoRecurso, individuo);
+                            }
+                        } else {
+                            log.error("Error al crear un nuevo recurso.");
+                            throw new NullPointerException("Error al crear un nuevo recurso.");
+                        }
                     }
                 }
             }
+            log.debug("Hemos actualizado los recursos");
+
         } catch (NullPointerException e) {
             System.err.println("Error: Se encontró una referencia nula en la lista de celdas o de individuos.");
+            log.error("Se encontró una referencia nula en la lista de celdas o de individuos.");
             e.printStackTrace();
 
         } catch (Exception e) {
             System.err.println("Error al actualizar recursos.");
+            log.error("Error al actualizar recursos.");
             e.printStackTrace();
         }
     }
 
+    public void ajustarIndividuoARecurso(Recurso recurso, Individuo individuo) {
 
+        if (recurso.getTipo() == "Agua") {
+            individuo.setTurnosVida(individuo.getTurnosVida() + model.getOriginal().getAgua());
+        } else if (recurso.getTipo() == "Comida") {
+            individuo.setTurnosVida(individuo.getTurnosVida() + model.getOriginal().getComida());
+        } else if (recurso.getTipo() == "Montaña") {
+            individuo.setTurnosVida(individuo.getTurnosVida() + model.getOriginal().getMontaña());
+        } else if (recurso.getTipo() == "Tesoro") {
+            individuo.setProbReprod(individuo.getProbReprod() + 0.01 * model.getOriginal().getTesoro());
+        } else if (recurso.getTipo() == "Biblioteca") {
+            individuo.setProbClon(individuo.getProbClon() + 0.01 * model.getOriginal().getBiblioteca());
+        } else if (recurso.getTipo() == "Pozo") {
+            individuo.setProbClon(individuo.getProbClon() + 0.005 * model.getOriginal().getPozo());
+        }
+        log.debug("Hemos ajustado los individuos a los recursos que hay en su nueva celda.");
+    }
+
+
+
+    //////////////////////////////////////////Función que devuelve la Celda de las direcciones que especificas////////////////////////////////////////
     public Celda getCeldaenDireccion(int columna, int fila) {
         try {
+            /** Busca celda por celda hasta encontrar la celda con la misma columna y fila **/
+
             for (Celda celda : listaceldas) {
                 if (celda.getColumna() == columna && celda.getFila() == fila) {
                     return celda;
@@ -708,11 +898,13 @@ public class NuevaPartidaParametrosController implements Initializable {
             }
             return null;
         } catch (NullPointerException e) {
+            log.error("Error: Se encontró una referencia nula en la lista de celdas.");
             System.err.println("Error: Se encontró una referencia nula en la lista de celdas.");
             e.printStackTrace();
             return null;
 
         } catch (Exception e) {
+            log.error("Error al buscar celda en dirección.");
             System.err.println("Error al buscar celda en dirección.");
             e.printStackTrace();
             return null;
@@ -720,7 +912,9 @@ public class NuevaPartidaParametrosController implements Initializable {
 
     }
 
+    //////////////////////////////////////////////CUENTA NÚMERO DE VIVOS EN TOTAL/////////////////////////////////////////////////////////
     public int numerovivos() {
+        /** Celda por celda, por cada individuo añade uno más la variable "vivos" **/
         int vivos = 0;
         for (Celda celda : listaceldas) {
             for (Individuo individuo : celda.getIndividuos()) {
@@ -730,8 +924,32 @@ public class NuevaPartidaParametrosController implements Initializable {
         return vivos;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /////////////////////////////////////////////////////TERMINAR PARTIDA//////////////////////////////////////////////////////////////////////////////////////////
+
+    public void evaluarterminarPartida(){
+        /** En cada turno(AnimationTimer) se llama a esta función para comprobar si se debe finalizar la partida.
+         Si se debe finalizar se llama a la función terminarPartida();
+         **/
+        if (numerovivos() == 1){
+            terminarPartida();
+        }
+        log.debug("Hemos evaluado si se debe terminar la partida.");
+    }
+
     public void terminarPartida(){
 
+        /** Impríme un mensaje al finalizar la partida (dándole al botón Terminar o cuando solo queda un individuo vivo) **/
+
+        animationTimer.stop();
+        labelFinJuego.setMinSize(paneTablero.getHeight(),paneTablero.getWidth());
+        fontSize = Math.min(paneTablero.getWidth(), paneTablero.getHeight() ) / 10;
+        labelFinJuego.setStyle("-fx-font-size: " + fontSize + "px;" +" -fx-text-alignment: center;");
+        labelFinJuego.setText("¡¡¡ GRACIAS POR JUGAR !!!");
+
+        log.debug("Hemos terminado la partida y hemos impreso un mensaje por pantalla.");
     }
 
 
@@ -753,12 +971,15 @@ public class NuevaPartidaParametrosController implements Initializable {
                     celda.setMaxSize((double) a/columnas , (double) b/filas);
                     celda.setStyle("-fx-background-color: #d866f7;-fx-border-color: black; -fx-text-alignment: center;");
 
+                    celda.setOnMouseClicked(event -> clickonCelda(event,celda));
+
                     tableroDeJuego.add(celda, i, j);
                     listaceldas.add(celda);
                 }
             }
         } catch (Exception e) {
             System.err.println("Error al crear el tablero.");
+            log.error("Error al crear el tablero.");
             e.printStackTrace();
         }
     }
@@ -775,11 +996,16 @@ public class NuevaPartidaParametrosController implements Initializable {
                     celda.setMaxSize((double) a / columnas, (double) b / filas);
                     celda.setStyle("-fx-background-color: #d866f7;-fx-border-color: black; -fx-text-alignment: center;");
 
+                    celda.setOnMouseClicked(event -> clickonCelda(event,celda));
+                    //celda.setOnMouseClicked(event -> clickonCelda(celda));
+                    //celda.setOnMouseClicked(event -> clickprueba(event));
+
                     tableroDeJuego.add(celda, celda.getColumna(), celda.getFila());
                 }
             }
         } catch (Exception e) {
             System.err.println("Error al crear el tablero con celdas.");
+            log.error("Error al crear el tablero con celdas.");
             e.printStackTrace();
         }
     }
@@ -787,8 +1013,10 @@ public class NuevaPartidaParametrosController implements Initializable {
     public void eliminarTablero() {
         try {
             tableroDeJuego.getChildren().clear();
+            log.debug("Hemos eliminado el tablero.");
         } catch (Exception e) {
             System.err.println("Error al crear el tablero con celdas.");
+            log.error("Error al crear el tablero con celdas.");
             e.printStackTrace();
         }
     }
@@ -821,32 +1049,40 @@ public class NuevaPartidaParametrosController implements Initializable {
                         nuevoIndividuo = new IndividuoBasico(idIndividuos, 0, model.getOriginal().getTurnosVida(),
                                 0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
                                 1 - (0.01 * model.getOriginal().getProbClon()), 0);
-                        idIndividuos++;
+
                     } else if (tipoIndividuo == 1) {
                         nuevoIndividuo = new IndividuoNormal(idIndividuos, 0, model.getOriginal().getTurnosVida(),
                                 0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
                                 1 - (0.01 * model.getOriginal().getProbClon()), 1);
-                        idIndividuos++;
+
                     } else if (tipoIndividuo == 2) {
                         nuevoIndividuo = new IndividuoAvanzado(idIndividuos, 0, model.getOriginal().getTurnosVida(),
                                 0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
                                 1 - (0.01 * model.getOriginal().getProbClon()), 2);
-                        idIndividuos++;
+
                     }
 
                     if (nuevoIndividuo != null) {
                         celda.agregarIndividuo(nuevoIndividuo);
+                        idIndividuos++;
+                        for (Recurso recurso : celda.getRecursos()) {
+                            ajustarIndividuoARecurso(recurso, nuevoIndividuo);
+                        }
                     } else {
                         throw new NullPointerException("Error al crear un nuevo individuo.");
                     }
                 }
             }
+            log.debug("Hemos añadido individuos de forma aleatoria a las celdas.");
+
         } catch (NullPointerException e) {
             System.err.println("Error: Se encontró una referencia nula en la lista de celdas.");
+            log.error("Se encontró una referencia nula en la lista de celdas.");
             e.printStackTrace();
 
         } catch (Exception e) {
             System.err.println("Error al agregar individuos de manera aleatoria.");
+            log.error("Error al agregar individuos de manera aleatoria.");
             e.printStackTrace();
         }
     }
@@ -864,33 +1100,38 @@ public class NuevaPartidaParametrosController implements Initializable {
                     Recurso nuevoRecurso = null; //creamos el recurso fuera de los if primero
 
                     if (tipoRecurso == 0) {
-                        nuevoRecurso = new Recurso("Agua", 3);
+                        nuevoRecurso = new Recurso(idRecursos,"Agua", 3);
                     } else if (tipoRecurso == 1) {
-                        nuevoRecurso = new Recurso("Com", 3);
+                        nuevoRecurso = new Recurso(idRecursos,"Com", 3);
                     } else if (tipoRecurso == 2) {
-                        nuevoRecurso = new Recurso("Mont", 3);
+                        nuevoRecurso = new Recurso(idRecursos,"Mont", 3);
                     } else if (tipoRecurso == 3) {
-                        nuevoRecurso = new Recurso("Tes", 3);
+                        nuevoRecurso = new Recurso(idRecursos,"Tes", 3);
                     } else if (tipoRecurso == 4) {
-                        nuevoRecurso = new Recurso("Biblio", 3);
+                        nuevoRecurso = new Recurso(idRecursos,"Biblio", 3);
                     } else if (tipoRecurso == 5) {
-                        nuevoRecurso = new Recurso("Pozo", 3);
+                        nuevoRecurso = new Recurso(idRecursos,"Pozo", 3);
                     }
 
                     if (nuevoRecurso != null) {
                         celda.agregarRecurso(nuevoRecurso);
+                        idRecursos ++;
                     } else {
                         throw new NullPointerException("Error al crear un nuevo recurso.");
                     }
 
                 }
             }
+            log.debug("Hemos añadido recursos de forma aleatoria a las celdas.");
+
         } catch (NullPointerException e) {
             System.err.println("Error: Se encontró una referencia nula en la lista de celdas.");
+            log.error("Se encontró una referencia nula en la lista de celdas.");
             e.printStackTrace();
 
         } catch (Exception e) {
             System.err.println("Error al agregar recursos de manera aleatoria.");
+            log.error("Error al agregar recursos de manera aleatoria.");
             e.printStackTrace();
         }
     }
@@ -910,8 +1151,8 @@ public class NuevaPartidaParametrosController implements Initializable {
             // Meter todos los individuos de la celda
             for (Individuo individuo : celda.getIndividuos()) {
                 Label individuoLabel = new Label(individuo.toString());
-                individuoLabel.setStyle("-fx-font-size: " + fontSize + "px;");
                 individuosBox.getChildren().add(individuoLabel);
+
 
             }
 
@@ -921,8 +1162,8 @@ public class NuevaPartidaParametrosController implements Initializable {
             // Meter todos los recursos de la celda
             for (Recurso recurso : celda.getRecursos()) {
                 Label recursoLabel = new Label(recurso.toString());
-                recursoLabel.setStyle("-fx-font-size: " + fontSize + "px;");
                 recursosBox.getChildren().add(recursoLabel);
+
 
             }
 
@@ -931,19 +1172,343 @@ public class NuevaPartidaParametrosController implements Initializable {
             // Agregar los Box de individuos y recursos al Box horizontal
             contenido.getChildren().addAll(individuosBox, recursosBox);
 
+
+            contenido.setOnMouseClicked(event -> clickonCelda(event, celda));
+
+            celda.getChildren().add(contenido);
+
             // Agregar el contenido al tablero en la posición correspondiente
             tableroDeJuego.add(contenido, celda.getColumna(), celda.getFila());
 
+            //log.debug("Hemos mostrado las celdas por pantalla con su contenido.");
+
         } catch (Exception e) {
             System.err.println("Error al mostrar celdas.");
+            log.error("Error al mostrar celdas.");
             e.printStackTrace();
+        }
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    ////////////////////////////////////////////////////////FUNCIONES USUARIO AÑADA INDIVIDUOS/RECURSOS//////////////////////////////////////////////////////////////
+
+    /**public void analizarClickonCelda(MouseEvent event, Celda celda) {
+
+        log.debug("Ha entrado en analizarClickonCelda");
+        log.debug(celda.getColumna());
+        log.debug(celda.getFila());
+    }**/
+
+    /**public void analizarClickonCelda(MouseEvent event) {
+
+        log.debug("Ha entrado en analizarClickonCelda");
+
+        Node source = (Node) event.getSource();
+        if (source == null) {
+            log.debug("el source es null");
+        }
+        while (source != null && !(source instanceof Celda)) {
+            log.debug("Tipo de nodo actual: " + source.getClass().getName());
+            source = source.getParent();
+            log.debug("Ha entrado en el while");
+        }
+        log.debug("Ha salido del while");
+        if (source == null) {
+            log.debug("el source es null 2");
+        }
+        if (!(source instanceof Celda)){
+            log.debug("Source no es instance de celda");
+        }
+        if (source instanceof Celda){
+            log.debug("Ha entrado el iiiiiiiiif");
+        }
+        if (source != null && source instanceof Celda) {
+            log.debug("Ha entrado en el if");
+            Celda celda = (Celda) source;
+            log.debug("Se ha pulsado en la celda: " + celda);
+            clickonCelda(celda);
+        }
+    }**/
+
+
+
+    public void clickonCelda(MouseEvent event, Celda celda) {
+
+        log.debug("Se ha pulsado en la celda.");
+        log.debug(celda.getColumna());
+        log.debug(celda.getFila());
+        log.debug("Estamos en clickonCelda");
+
+        fontSize = Math.min(paneTablero.getWidth() / model.getOriginal().getColumnas(),
+                paneTablero.getHeight() / model.getOriginal().getFilas()) / 6;
+
+        if (añadirIndividuoBasico.isSelected()) {
+            añadirIndivBasicoCelda(celda, fontSize);
+        } else if (añadirIndividuoNormal.isSelected()) {
+            añadirIndivNormalCelda(celda, fontSize);
+        } else if (añadirIndividuoAvanzado.isSelected()) {
+            añadirIndivAvanzadoCelda(celda, fontSize);
+        } else if (añadirAgua.isSelected()) {
+            añadirAguaCelda(celda, fontSize);
+        } else if (añadirComida.isSelected()) {
+            añadirComidaCelda(celda, fontSize);
+        } else if (añadirMontaña.isSelected()) {
+            añadirMontañaCelda(celda, fontSize);
+        } else if (añadirTesoro.isSelected()) {
+            añadirTesoroCelda(celda, fontSize);
+        } else if (añadirBiblioteca.isSelected()) {
+            añadirBiblitecaCelda(celda, fontSize);
+        } else if (añadirPozo.isSelected()) {
+            añadirPozoCelda(celda, fontSize);
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void cambiarTablero(ArrayList<Celda> listaceldas, double fontSize) {
+        ArrayList<Celda> celdascopy = new ArrayList<>();
+        for (Celda casilla : listaceldas) {
+            celdascopy.add(casilla);
+        }
 
+        eliminarTablero();
+        log.debug("Hemos eliminado el tablero");
+        listaceldas = celdascopy;
+
+        evaluarterminarPartida();
+        evaluarMorirIndividuos();
+        evaluarMorirRecursos();
+        crearTableroConCeldas(listaceldas, model.getOriginal().getColumnas(), model.getOriginal().getFilas());
+        for (Celda casilla : listaceldas) {
+            mostrarEnCelda(casilla, fontSize);
+        }
+    }
+
+
+    public void añadirIndivBasicoCelda (Celda celda, double fontSize) {
+
+        IndividuoBasico nuevoIndividuo = new IndividuoBasico(idIndividuos, turnoPartida, model.getOriginal().getTurnosVida(),
+                0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
+                1 - (0.01 * model.getOriginal().getProbClon()), 0);
+        log.debug("Hemos creado el individuo básico");
+
+        if (nuevoIndividuo != null) {
+
+            celda.agregarIndividuo(nuevoIndividuo);
+            idIndividuos++;
+            for (Recurso recurso : celda.getRecursos()) {
+                ajustarIndividuoARecurso(recurso, nuevoIndividuo);
+            }
+
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            log.error("Error al crear un nuevo individuo básico.");
+            throw new NullPointerException("Error al crear un nuevo individuo básico.");
+        }
+
+    }
+
+
+    public void añadirIndivNormalCelda (Celda celda, double fontSize) {
+
+        IndividuoNormal nuevoIndividuo = new IndividuoNormal(idIndividuos, turnoPartida, model.getOriginal().getTurnosVida(),
+                0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
+                1 - (0.01 * model.getOriginal().getProbClon()), 1);
+
+        if (nuevoIndividuo != null) {
+            celda.agregarIndividuo(nuevoIndividuo);
+            idIndividuos++;
+            for (Recurso recurso : celda.getRecursos()) {
+                ajustarIndividuoARecurso(recurso, nuevoIndividuo);
+            }
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            log.error("Error al crear un nuevo individuo normal.");
+            throw new NullPointerException("Error al crear un nuevo individuo normal.");
+        }
+
+    }
+
+    public void añadirIndivAvanzadoCelda (Celda celda, double fontSize) {
+
+        IndividuoAvanzado nuevoIndividuo = new IndividuoAvanzado(idIndividuos, turnoPartida, model.getOriginal().getTurnosVida(),
+                0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
+                1 - (0.01 * model.getOriginal().getProbClon()), 1);
+
+        if (nuevoIndividuo != null) {
+            celda.agregarIndividuo(nuevoIndividuo);
+            idIndividuos++;
+            for (Recurso recurso : celda.getRecursos()) {
+                ajustarIndividuoARecurso(recurso, nuevoIndividuo);
+            }
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            log.error("Error al crear un nuevo individuo avanzado.");
+            throw new NullPointerException("Error al crear un nuevo individuo avanzado.");
+        }
+
+    }
+
+    public void añadirAguaCelda (Celda celda, double fontSize) {
+
+        Recurso nuevoRecurso = new Recurso(idRecursos, "Agua", 3);
+
+        if (nuevoRecurso != null) {
+            celda.agregarRecurso(nuevoRecurso);
+            idRecursos ++;
+            for (Individuo individuo : celda.getIndividuos()) {
+                ajustarIndividuoARecurso(nuevoRecurso, individuo);
+            }
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            log.error("Error al crear un nuevo recurso (agua).");
+            throw new NullPointerException("Error al crear un nuevo recurso (agua).");
+        }
+
+    }
+
+    public void añadirComidaCelda (Celda celda, double fontSize) {
+
+        Recurso nuevoRecurso = new Recurso(idRecursos, "Com", 3);
+
+        if (nuevoRecurso != null) {
+            celda.agregarRecurso(nuevoRecurso);
+            idRecursos ++;
+            for (Individuo individuo : celda.getIndividuos()) {
+                ajustarIndividuoARecurso(nuevoRecurso, individuo);
+            }
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            log.error("Error al crear un nuevo recurso (comida).");
+            throw new NullPointerException("Error al crear un nuevo recurso (comida).");
+        }
+
+    }
+
+    public void añadirMontañaCelda (Celda celda, double fontSize) {
+
+        Recurso nuevoRecurso = new Recurso(idRecursos, "Mont", 3);
+
+        if (nuevoRecurso != null) {
+            celda.agregarRecurso(nuevoRecurso);
+            idRecursos ++;
+            for (Individuo individuo : celda.getIndividuos()) {
+                ajustarIndividuoARecurso(nuevoRecurso, individuo);
+            }
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            log.error("Error al crear un nuevo recurso (montaña).");
+            throw new NullPointerException("Error al crear un nuevo recurso (montaña).");
+        }
+
+    }
+
+    public void añadirTesoroCelda (Celda celda, double fontSize) {
+
+        Recurso nuevoRecurso = new Recurso(idRecursos, "Tes", 3);
+
+        if (nuevoRecurso != null) {
+            celda.agregarRecurso(nuevoRecurso);
+            idRecursos ++;
+            for (Individuo individuo : celda.getIndividuos()) {
+                ajustarIndividuoARecurso(nuevoRecurso, individuo);
+            }
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            log.error("Error al crear un nuevo recurso (tesoro).");
+            throw new NullPointerException("Error al crear un nuevo recurso (tesoro).");
+        }
+
+    }
+
+    public void añadirBiblitecaCelda (Celda celda, double fontSize) {
+
+        Recurso nuevoRecurso = new Recurso(idRecursos, "Biblio", 3);
+
+        if (nuevoRecurso != null) {
+            celda.agregarRecurso(nuevoRecurso);
+            idRecursos ++;
+            for (Individuo individuo : celda.getIndividuos()) {
+                ajustarIndividuoARecurso(nuevoRecurso, individuo);
+            }
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            log.error("Error al crear un nuevo recurso (biblioteca).");
+            throw new NullPointerException("Error al crear un nuevo recurso (biblioteca).");
+        }
+
+    }
+
+    public void añadirPozoCelda (Celda celda, double fontSize) {
+
+        Recurso nuevoRecurso = new Recurso(idRecursos, "Pozo", 3);
+
+        if (nuevoRecurso != null) {
+            celda.agregarRecurso(nuevoRecurso);
+            idRecursos ++;
+            for (Individuo individuo : celda.getIndividuos()) {
+                ajustarIndividuoARecurso(nuevoRecurso, individuo);
+            }
+            cambiarTablero(listaceldas, fontSize);
+        } else {
+            throw new NullPointerException("Error al crear un nuevo recurso.");
+        }
+
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////BOTONES PAUSAR, TERMINAR Y DESHABILITAR///////////////////////////////////////////////////////////////////////////////
+
+    @FXML
+    public void onBotonAceptarClick() {
+        model.commit(); //En model se guardan todos los datos.
+        if (partidaComenzada == false) {
+            botonJugar.setDisable(false);
+        }
+        log.debug("Se ha apretado el botón aceptar.");
+    }
+    @FXML
+    public void onBotonReiniciarClick() {
+        model.rollback();
+        log.debug("Se ha apretado el botón reiniciar.");
+    }
+
+    @FXML
+    public void onBotonCerrarClick() {
+        animationTimer.stop();
+        reiniciarVariablesGenerales();
+        scene.close();
+        log.debug("Se ha apretado el botón cerrar.");
+    }
+
+    public void reiniciarVariablesGenerales() {
+
+        welcomeText.setText("");
+        eliminarTablero();
+        listaceldas.clear();
+        partidapausa = false;
+        botonPausar.setDisable(false);
+        botonTerminar.setDisable(false);
+        botonJugar.setDisable(false);
+        idIndividuos = 0;
+        idRecursos = 0;
+        velocidadAdaptadaANIMATION = 50;
+        labelTurno.setText("Turno: ");
+        turnoPartida = 1;
+        partida = null;
+        deshabilitarSliders(false);
+        deshabilitarSlidersTablero(false);
+        model.getOriginal().setcero();
+
+        log.debug("Se han reiniciado las variables generales.");
+    }
+
+
     @FXML
     public void onPausarButtonClick() {
         try {
@@ -955,6 +1520,7 @@ public class NuevaPartidaParametrosController implements Initializable {
 
         } catch (Exception e) {
             System.err.println("Error al pulsar botón pausar/reanudar.");
+            log.error("Error al pulsar botón pausar/reanudar.");
             e.printStackTrace();
         }
     }
@@ -969,6 +1535,7 @@ public class NuevaPartidaParametrosController implements Initializable {
             deshabilitarSliders(false);
 
         } catch (Exception e) {
+            log.error("Error al pulsar botón pausar.");
             System.err.println("Error al pulsar botón pausar.");
             e.printStackTrace();
         }
@@ -976,6 +1543,7 @@ public class NuevaPartidaParametrosController implements Initializable {
 
     public void reanudarpartida() {
         try {
+            log.debug("Partida reanudada.");
             partidapausa = false;
             adaptarVelocidad();
 
@@ -985,6 +1553,7 @@ public class NuevaPartidaParametrosController implements Initializable {
             deshabilitarSliders(true);
 
         } catch (Exception e) {
+            log.error("Error al pulsar botón reanudar.");
             System.err.println("Error al pulsar botón reanudar.");
             e.printStackTrace();
         }
@@ -996,6 +1565,7 @@ public class NuevaPartidaParametrosController implements Initializable {
         try (FileWriter writer = new FileWriter(rutaArchivo)) {
             gson.toJson(objeto, writer);
         } catch (IOException e) {
+            log.error("Error al guardar el objeto en el archivo");
             e.printStackTrace();
         }
     }
@@ -1007,30 +1577,50 @@ public class NuevaPartidaParametrosController implements Initializable {
             return gson.fromJson(reader, clase);
         } catch (IOException e) {
             e.printStackTrace();
+            log.error("Error al cardar objeto desde el archivo.");
             return null;
         }
     }
 
     public void onBotonGuardarClick() {
-        log.debug("Hemos entrado en onBotonGuardarClick");
+        log.debug("Se ha apretado el botón Guardar.");
         animationTimer.stop();
         partida.setOriginalcopy(model.getOriginal());
-        partida.setListaceldas(listaceldas);
+        partida.ordenarEnListas(listaceldas);
+        partida.setIdIndividuos(idIndividuos);
+        partida.setIdRecursos(idRecursos);
+        partida.setTurnoPartida(turnoPartida);
         String rutaArchivo = "partida.json";
-        log.debug("Seguimos aquí");
-        //guardarObjetoEnArchivo(rutaArchivo, partida);
-        log.debug("Seguimos aquí 2");
-        partida = null;
-        model.getOriginal().setcero();
-        scene.close();
+        guardarObjetoEnArchivo(rutaArchivo, partida);
+    }
+
+    public void cargarPartida() {
+        log.debug("Se está cargando una partida antigua.");
+        String rutaArchivo = "partida.json";
+        Partida partida = cargarObjetoDesdeArchivo(rutaArchivo, Partida.class);
+
+        listaceldas.clear();
+        partida.desordenarEnListas(listaceldas);
+        model.setOriginal(partida.getOriginalcopy());
+        idIndividuos = partida.getIdIndividuos();
+        idRecursos = partida.getIdRecursos();
+        turnoPartida = partida.getTurnoPartida();
+
+        partidaComenzada = true;
+        botonPausar.setText("Reanudar");
+        botonPausar.setDisable(false);
+        deshabilitarSlidersTablero(true);
+        //listaceldas = partida.getListaceldas();
+
     }
 
 
 
     public void onTerminarButtonClick() {
-        animationTimer.stop();
-        partida = null;
-        model.getOriginal().setcero();
+        log.debug("Se ha apretado el botón terminar partida.");
+        terminarPartida();
+        reiniciarVariablesGenerales();
+
     }
 
 
@@ -1039,8 +1629,10 @@ public class NuevaPartidaParametrosController implements Initializable {
         try {
             sliderColumnas.setDisable(a);
             sliderFilas.setDisable(a);
+            log.debug("Se han deshabilitado los sliders del tablero.");
         } catch (Exception e) {
             System.err.println("Error al deshabilitar los sliders del tablero.");
+            log.error("Error al deshabilitar los sliders del tablero.");
             e.printStackTrace();
         }
     }
@@ -1065,8 +1657,11 @@ public class NuevaPartidaParametrosController implements Initializable {
             sliderProbBiblioteca.setDisable(a);
             sliderProbPozo.setDisable(a);
 
+            log.debug("Se han deshabilitado los sliders generales.");
+
         } catch (Exception e) {
             System.err.println("Error al deshabilitar sliders.");
+            log.error("Error al deshabilitar sliders.");
             e.printStackTrace();
         }
     }
@@ -1081,8 +1676,10 @@ public class NuevaPartidaParametrosController implements Initializable {
             //stage.setMaximized(true);
             stage.setResizable(false);
             stage.show();
+            log.debug("Se ha abierto una ventana con las normas.");
         } catch (Exception e) {
             System.err.println("Error al abrir las normas del juego.");
+            log.error("Error al abrir las normas del juego.");
             e.printStackTrace();
         }
     }
@@ -1092,98 +1689,7 @@ public class NuevaPartidaParametrosController implements Initializable {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
-
-
-
-
-
-
-
 /**
-    @FXML
-    public void aceptarParIndividuo(){
-        crearPartida();
-    }
-
-    @FXML
-    public void aceptarParEntorno() {
-
-    }
-
-    @FXML
-    public void aceptarTablero() {
-        this.tableroCreado = true;
-        eliminarTablero();       //Limpiar tablero anterior y volver a dibujarlo
-        crearTablero((int) model.getOriginal().getColumnas(), (int) model.getOriginal().getFilas());
-        cambiarVelocidad();
-    }
-
-
-
- @FXML
- void cambiarVelocidad() {
- if (sliderVelocidad.getValue()==0.25) {
- this.velocidad = 125;
- } else if (sliderVelocidad.getValue()==0.5) {
- this.velocidad = 100;
- } else if (sliderVelocidad.getValue()==0.75) {
- this.velocidad = 75;
- } else if (sliderVelocidad.getValue()==1.25) {
- this.velocidad = 40;
- } else if (sliderVelocidad.getValue()==1.5) {
- this.velocidad = 30;
- } else if (sliderVelocidad.getValue()==1.75) {
- this.velocidad = 20;
- } else if (sliderVelocidad.getValue()==2) {
- this.velocidad = 10;
- } else {
- this.velocidad = 50;
- }
- }
-
-
-            AnimationTimer animationTimer = new AnimationTimer() {
-                int i = velocidad;
-                @Override
-                public void handle(long now) {
-                    if (velocidad == 0) {
-                        listaIndividuos = partida.getListaIndividuos();
-                        partida.modificarTurno();
-
-                        lblTurno.setText("Turno: " + partida.getTurno);
-                    }
-                    i++;
-                }
-            };
-
-    //FUNCIONES MENÚ --OBJETIVO: Dar al usuario las opciones de:
-    //                       -CargarPartidaExistente -GuardarPartidaActual -Salir a la Pantalla de Inicio
-    @FXML
-    public void cargarPartida() {controladorEscenarios.cargarEscenarioCargar();}
-
-    @FXML
-    public void salir() { controladorEscenarios.cargarEscerioInicio();}
-
-    @FXML
-    private void pause() {
-        btnPause.setDisable(true);
-        btnEnd.setDisable(false);
-        btnStart.setDisable(false);
-        deshabilitarSliders(false);
-        animationTimer.stop();
-    }
-
-    @FXML
-    private void endGame() {
-        btnEnd.setDisable(true);
-        btnPause.setDisable(true);
-        btnStart.setDisable(true);
-        deshabilitarSliders(true);
-        animationTimer.stop();
-    }
 
 
 
@@ -1260,220 +1766,5 @@ public class NuevaPartidaParametrosController implements Initializable {
      }
      }
      }**/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**public void crearCeldas(int altura, int ancho) {
-        for (int fila = 0; fila < altura; fila++) {
-            for (int columna = 0; columna < ancho; columna++) {
-                Celda celda = new Celda(fila, columna); // Crea una nueva celda
-                listaceldas.add(celda);
-            }
-        }
-    }**/
-
-    /**public void moveryActualizarIndividuos(){
-        for (Celda celda : listaceldas) {
-            List<Integer> direcciones = null;
-            Celda celdanueva = null;
-            for (Individuo individuo : celda.getIndividuos()) {
-                if (individuo instanceof IndividuoBasico) {
-                    IndividuoBasico individuoBasico = (IndividuoBasico) individuo;
-                    direcciones = individuoBasico.moveIB(model.getOriginal().getAltura(), model.getOriginal().getAncho());
-                    celda.quitarIndividuo(individuoBasico);
-                    celdanueva = getCeldaenDireccion(direcciones.get(0), direcciones.get(1));
-                    celdanueva.agregarIndividuo(individuoBasico);
-                } //else if (individuo instanceof IndividuoNormal) {
-                    //IndividuoNormal individuoNormal = (IndividuoNormal) individuo;
-                //}
-
-                individuo.actualizar();
-
-            }
-        }
-    }
-
-    public void actualizarRecursos(){
-        for (Celda celda : listaceldas){
-            for (Recurso recurso : celda.getRecursos()) {
-                recurso.actualizar();
-                if (recurso.getTiempoAparicion() == 0) {
-                    celda.quitarRecurso(recurso);
-                }
-            }
-        }
-    }
-
-    public void ajustarIndividuoARecursos(Celda celda, Individuo individuo) {
-        for (Recurso recurso : celda.getRecursos()) {
-            if (recurso.getTipo() == "Agua") {
-                individuo.setTurnosVida(individuo.getTurnosVida() + model.getOriginal().getAgua());
-            } else if (recurso.getTipo() == "Comida") {
-                individuo.setTurnosVida(individuo.getTurnosVida() + model.getOriginal().getComida());
-            } else if (recurso.getTipo() == "Montaña") {
-                individuo.setTurnosVida(individuo.getTurnosVida() + model.getOriginal().getMontaña());
-            } else if (recurso.getTipo() == "Tesoro") {
-                individuo.setProbReprod(individuo.getProbReprod() + 0.01 * model.getOriginal().getTesoro());
-            } else if (recurso.getTipo() == "Biblioteca") {
-                individuo.setProbClon(individuo.getProbClon() + 0.01 * model.getOriginal().getBiblioteca());
-            } else if (recurso.getTipo() == "Pozo") {
-                celda.quitarIndividuo(individuo);
-            }
-        }
-    }
-
-    public Celda getCeldaenDireccion(int columna, int fila) {
-        for (Celda celda : listaceldas) {
-            if (celda.getColumna() == columna && celda.getFila() == fila) {
-                return celda;
-            }
-        }
-        return null;
-    }
-
-
-
-
-
-
-    **/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**public void agregarIndividuosAleatoriosACeldas2(int cantidadMaximaIndividuos) {
-        Random random = new Random();
-
-        // Itera sobre todas las celdas del tablero
-        for (int fila = 0; fila < model.getOriginal().getAltura(); fila++) {
-            for (int columna = 0; columna < model.getOriginal().getAncho(); columna++) {
-                Celda celda = new Celda(fila, columna); // Crea una nueva celda
-                int cantidadIndividuos = random.nextInt(cantidadMaximaIndividuos) + 1; // Genera un número aleatorio de individuos para esta celda
-                // Ponemos +1 para asegurarnos de que haya un individuo por lo menos
-
-                // Agrega la cantidad de individuos aleatorios generados a esta celda
-                for (int i = 0; i < cantidadIndividuos; i++) {
-
-                    int tipoIndividuo = random.nextInt(3);
-                    Individuo nuevoIndividuo = null; //creamos el individuo fuera de los if primero
-
-                    if (tipoIndividuo == 0) {
-                        nuevoIndividuo = new IndividuoBasico(0, 0,model.getOriginal().getTurnosVida(),
-                                0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
-                                1 - (0.01 * model.getOriginal().getProbClon()));
-                    } else if (tipoIndividuo == 1) {
-                        nuevoIndividuo = new IndividuoNormal(1, 0, model.getOriginal().getTurnosVida(),
-                                0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
-                                1 - (0.01 * model.getOriginal().getProbClon()));
-                    } else if (tipoIndividuo == 2) {
-                        nuevoIndividuo = new IndividuoAvanzado(2, 0, model.getOriginal().getTurnosVida(),
-                                0.01 * model.getOriginal().getProbReprod(), 0.01 * model.getOriginal().getProbClon(),
-                                1 - (0.01 * model.getOriginal().getProbClon()));
-                    }
-
-                    celda.agregarIndividuo(nuevoIndividuo); // Agrega el individuo a la celda
-                }
-
-                // Agrega la celda con los individuos generados al tablero de juego
-                listaceldas.add(celda);
-            }
-        }
-    }**/
-
-
-    /**public void agregarRecursosAleatoriosACeldas2(int cantidadMaximaRecursos) {
-        Random random = new Random();
-
-
-        for (int fila = 0; fila < model.getOriginal().getAltura(); fila++) {
-            for (int columna = 0; columna < model.getOriginal().getAncho(); columna++) {
-                Celda celda = new Celda(fila, columna); // Crea una nueva celda
-                int cantidadIndividuos = random.nextInt(cantidadMaximaRecursos) + 1; // Genera un número aleatorio de individuos para esta celda
-                // Ponemos +1 para asegurarnos de que haya un individuo por lo menos
-
-                // Agrega la cantidad de recursos aleatorios generados a esta celda
-                for (int i = 0; i < cantidadIndividuos; i++) {
-
-                    int tipoIndividuo = random.nextInt(6);
-                    Recurso recurso = null; //Creamos el recurso fuera de los if primero
-
-
-                }
-
-            }
-        }
-    }**/
-
-
-    /** Nota 1: IMPORTANTE:
-     * la inicialización en este caso la hemos hecho cuando el usuario ha pulsado el botón.
-     * También podríamos hacerla en el método "initialize" si indicamos que el controlador es "Initializable",
-     * como en los ejemplos anteriores.
-     */
-
-    /** Nota 2:
-     * Este ejemplo está hecho para reducir al máximo la complejidad, pero hay que recordar que podríamos querer
-     * enlazar lo que aparece en cada celda del grid con objetos y properties...
-     */
-
-    /** Nota 3:
-     * Si quiero varios elementos en la misma celda, debo introducirlos en un layout y ese layour meterlo en la celda.
-     */
-
-
-
-
-
-
-
 
 }

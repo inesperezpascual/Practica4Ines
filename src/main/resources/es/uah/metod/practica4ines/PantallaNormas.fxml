@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="592.0" prefWidth="705.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uah.metod.practica4ines.PantallaNormas">
+<AnchorPane prefHeight="592.0" prefWidth="705.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uah.metod.practica4ines.PantallaNormas">
    <children>
-      <Label layoutX="258.0" layoutY="61.0" text="LAS NORMAS SON:" textFill="#7e0ba1">
+      <Label layoutX="271.0" layoutY="63.0" text="¿CÓMO JUGAR?" textFill="#7e0ba1">
          <font>
             <Font name="Arial Black" size="18.0" />
          </font></Label>

@@ -35,13 +35,14 @@ public class Celda extends Pane {
         recursos.remove(recurso);
     }
 
+    public int getColumna() {
+        return columna;
+    }
+
     public int getFila() {
         return fila;
     }
 
-    public int getColumna() {
-        return columna;
-    }
 
     public List<Individuo> getIndividuos() {
         return individuos;

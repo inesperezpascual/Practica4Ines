@@ -14,7 +14,7 @@ public class Individuo {
     private double probClon;
     private double probMuerte;
     private int tipo;
-    private Map<String, Individuo> padres;
+    //private Map<String, Individuo> padres;
 
     public Individuo(int id, int generacion, int turnosVida, double probReprod,
                      double probClon, double probMuerte, int tipo) {
@@ -25,14 +25,14 @@ public class Individuo {
         this.probClon = probClon;
         this.probMuerte = probMuerte;
         this.tipo = tipo;
-        this.padres = new TreeMap<>();
+        //this.padres = new TreeMap<>();
     }
 
-    public Map<String, Individuo> getPadresYAncestros() {
+    /**public Map<String, Individuo> getPadresYAncestros() {
         return padres;
     }
 
-    /**public void agregarPadreYAncestros(Individuo padre) {
+    public void agregarPadreYAncestros(Individuo padre) {
         if (!this.padres.containsKey(Integer.toString(padre.getId()))) {
             this.padres.put(Integer.toString(padre.getId()), padre);
             for (Individuo ancestro : padre.getPadresYAncestros().values()) {
@@ -84,16 +84,8 @@ public class Individuo {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getGeneracion() {
         return generacion;
-    }
-
-    public void setGeneracion(int generacion) {
-        this.generacion = generacion;
     }
 
     public int getTurnosVida() {

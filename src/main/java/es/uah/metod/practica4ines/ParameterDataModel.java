@@ -64,7 +64,7 @@ public class ParameterDataModel {
     public void setcero() {
         this.columnas = 0;
         this.filas = 0;
-        this.velocidad = 1;
+        this.velocidad = 1.0;
         this.turnosVida = 0;
         this.probReprod = 0;
         this.probClon = 0;
