@@ -74,13 +74,5 @@ public class MainController  {
         }
     }
 
-    /** Al no tener nada aparte de los botones
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.print("Inicialización en ejecución del controlador\n");
-        labelTextoEjemplo.textProperty().bind(texto);
-         miSlider.valueProperty().bindBidirectional(medida);
-         labelValorSlider.textProperty().bind(medida.asString());
-    }
-         **/
+
 }

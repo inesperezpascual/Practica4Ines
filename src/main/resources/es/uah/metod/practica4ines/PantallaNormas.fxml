@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="592.0" prefWidth="705.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uah.metod.practica4ines.PantallaNormas">
+<AnchorPane prefHeight="592.0" prefWidth="705.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.uah.metod.practica4ines.PantallaNormasController">
    <children>
       <Label layoutX="271.0" layoutY="63.0" text="¿CÓMO JUGAR?" textFill="#7e0ba1">
          <font>

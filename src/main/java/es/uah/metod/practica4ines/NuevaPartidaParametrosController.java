@@ -388,11 +388,8 @@ public class NuevaPartidaParametrosController implements Initializable {
             log.debug("Vamos a imprimir el tablero 1");
 
             for (Celda celda : listaceldas) {
-                System.out.println(celda.getColumna()+" , " + celda.getFila()+ " , "+celda.getIndividuos()+ " , " +celda.getRecursos());
-                System.out.println(fontSize);
                 mostrarEnCelda(celda, fontSize);
             }
-            //System.out.println(model.getOriginal().getVelocidad());
             adaptarVelocidad();
             animationTimer.start();
 
@@ -437,10 +434,9 @@ public class NuevaPartidaParametrosController implements Initializable {
                     for (Celda celda : listaceldas) {
                         celdascopy.add(celda);
                     }
+                    evaluarterminarPartida();
                     eliminarTablero();
-                    evaluarterminarPartida();
                     listaceldas = celdascopy;
-                    evaluarterminarPartida();
                     fontSize = Math.min(paneTablero.getWidth() / model.getOriginal().getColumnas(),
                             paneTablero.getHeight() / model.getOriginal().getFilas()) / 6;
 
@@ -472,11 +468,11 @@ public class NuevaPartidaParametrosController implements Initializable {
 
         try {
             if (model.getOriginal().getVelocidad()==0.25) {
-                this.velocidadAdaptadaANIMATION = 125;
+                this.velocidadAdaptadaANIMATION = 150;
             } else if (model.getOriginal().getVelocidad()==0.5) {
                 this.velocidadAdaptadaANIMATION = 100;
             } else if (model.getOriginal().getVelocidad()==0.75) {
-                this.velocidadAdaptadaANIMATION = 75;
+                this.velocidadAdaptadaANIMATION = 80;
             } else if (model.getOriginal().getVelocidad()==1.25) {
                 this.velocidadAdaptadaANIMATION = 40;
             } else if (model.getOriginal().getVelocidad()==1.5) {
@@ -997,8 +993,6 @@ public class NuevaPartidaParametrosController implements Initializable {
                     celda.setStyle("-fx-background-color: #d866f7;-fx-border-color: black; -fx-text-alignment: center;");
 
                     celda.setOnMouseClicked(event -> clickonCelda(event,celda));
-                    //celda.setOnMouseClicked(event -> clickonCelda(celda));
-                    //celda.setOnMouseClicked(event -> clickprueba(event));
 
                     tableroDeJuego.add(celda, celda.getColumna(), celda.getFila());
                 }
@@ -1151,8 +1145,8 @@ public class NuevaPartidaParametrosController implements Initializable {
             // Meter todos los individuos de la celda
             for (Individuo individuo : celda.getIndividuos()) {
                 Label individuoLabel = new Label(individuo.toString());
+                individuoLabel.setStyle("-fx-font-size: " + fontSize + "px;");
                 individuosBox.getChildren().add(individuoLabel);
-
 
             }
 
@@ -1162,8 +1156,9 @@ public class NuevaPartidaParametrosController implements Initializable {
             // Meter todos los recursos de la celda
             for (Recurso recurso : celda.getRecursos()) {
                 Label recursoLabel = new Label(recurso.toString());
-                recursosBox.getChildren().add(recursoLabel);
+                recursoLabel.setStyle("-fx-font-size: " + fontSize + "px;");
 
+                recursosBox.getChildren().add(recursoLabel);
 
             }
 
@@ -1195,44 +1190,6 @@ public class NuevaPartidaParametrosController implements Initializable {
 
 
     ////////////////////////////////////////////////////////FUNCIONES USUARIO AÑADA INDIVIDUOS/RECURSOS//////////////////////////////////////////////////////////////
-
-    /**public void analizarClickonCelda(MouseEvent event, Celda celda) {
-
-        log.debug("Ha entrado en analizarClickonCelda");
-        log.debug(celda.getColumna());
-        log.debug(celda.getFila());
-    }**/
-
-    /**public void analizarClickonCelda(MouseEvent event) {
-
-        log.debug("Ha entrado en analizarClickonCelda");
-
-        Node source = (Node) event.getSource();
-        if (source == null) {
-            log.debug("el source es null");
-        }
-        while (source != null && !(source instanceof Celda)) {
-            log.debug("Tipo de nodo actual: " + source.getClass().getName());
-            source = source.getParent();
-            log.debug("Ha entrado en el while");
-        }
-        log.debug("Ha salido del while");
-        if (source == null) {
-            log.debug("el source es null 2");
-        }
-        if (!(source instanceof Celda)){
-            log.debug("Source no es instance de celda");
-        }
-        if (source instanceof Celda){
-            log.debug("Ha entrado el iiiiiiiiif");
-        }
-        if (source != null && source instanceof Celda) {
-            log.debug("Ha entrado en el if");
-            Celda celda = (Celda) source;
-            log.debug("Se ha pulsado en la celda: " + celda);
-            clickonCelda(celda);
-        }
-    }**/
 
 
 
@@ -1610,7 +1567,6 @@ public class NuevaPartidaParametrosController implements Initializable {
         botonPausar.setText("Reanudar");
         botonPausar.setDisable(false);
         deshabilitarSlidersTablero(true);
-        //listaceldas = partida.getListaceldas();
 
     }
 
@@ -1685,86 +1641,5 @@ public class NuevaPartidaParametrosController implements Initializable {
     }
 
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/**
-
-
-
-    @FXML
-    private void start() {
-        if (tableroCreado) {
-            if (!partidaCreada){
-                crearPartida();
-                partida.individuosInicio();
-                listaIndividuos = partida.getListaIndividuos();
-                mostrarEnCasilla();
-                partidaCreada = true;
-            }
-            btnStart.setDisable(true);
-            btnPause.setDisable(false);
-            btnEnd.setDisable(false);
-            deshabilitarSliders(true);
-
-            animationTimer.start();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText(null);
-            alert.setTitle("Error");
-            alert.setContentText("No has creado el tablero");
-            alert.showAndWait();
-        }
-    }
-
-    public void setControladorEscenarios(EscenariosController controlador) {
-        this.controladorEscenarios = controlador;
-    }
-
-    public void crearPartida() {
-        this.partida = new Partida((int) sliderProbReprod.getValue(),(int)sliderProbClon.....)
-    }
-
-    public void mostrarEnCasilla() {
-        for (Individuo individuo: listaIndividuos) {
-
-                for(Casilla lugar : listaceldas) {
-                    if (Objects.equals(celda.getId, lugar.getId())) {
-                        lugar.setCenter(circulo);
-                    }
-                }
-
-            }else {
-                circulo.setStroke(Color.rgb(169,250,70));
-                circulo.setStrike
-                Casilla casilla = .getCasilla()
-                for(Casilla lugar : listaceldas) {
-                    if (Objects.equals(celda.getId, lugar.getId())) {
-                        lugar.setCenter(circulo);
-                    }
-                }
-    }**/
-
-
-    /**private class Partida extends AnimationTimer {
-
-     private long velocidad = 50;
-     private long interval = 1000000000/velocidad;
-
-     private long last = 0;
-     @Override
-     public void handle(long now) {
-     if (now - last > interval) {
-     moveryActualizarIndividuos();
-     for (Celda celda : listaceldas) {
-     double fontSize = Math.min(tableroDeJuego.getWidth() / model.getOriginal().getColumnas(),
-     tableroDeJuego.getHeight() / model.getOriginal().getFilas()) / 6;
-     mostrarEnCelda(celda, fontSize);
-     }
-     last = now;
-     }
-     }
-     }**/
 
 }
